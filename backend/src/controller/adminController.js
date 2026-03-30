@@ -1,10 +1,10 @@
 import { Song } from '../models/songModel.js';
 import { Album } from '../models/albumModel.js';
-import cloudinay from '../lib/cloudinary.js';
+import cloudinary from '../lib/cloudinary.js';
 
 const uploadToCloudinary = async (file) => {
   try {
-    const result = await cloudinay.uploader(file.tempFilePath, {
+    const result = await cloudinary.uploader.upload(file.tempFilePath, {
       resource_type: 'auto',
     });
     return result.secure_url;
@@ -94,7 +94,10 @@ export const createAlbum = async (req, res, next) => {
 export const deleteAlbum = async (req, res, next) => {
   try {
     const { id } = req.params;
-    (await Song.deleteMany({ albumId: id }), await Album.findByIdAndDelete(id));
+    await Promise.all([
+      Song.deleteMany({ albumId: id }),
+      Album.findByIdAndDelete(id),
+    ]);
     res.status(200).json({ message: 'Album deleted successfully' });
   } catch (error) {
     console.log('Error in deleteAlbum', error);

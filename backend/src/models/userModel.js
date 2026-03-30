@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
     imageUrl: {
       type: String,
       required: true,
+      default: 'https://via.placeholder.com/150', // Default image URL
     },
     clerkId: {
       type: String,
