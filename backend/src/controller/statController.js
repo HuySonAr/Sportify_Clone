@@ -1,3 +1,7 @@
+import { Album } from "../models/albumModel.js";
+import { Song } from "../models/songModel.js";
+import { User } from "../models/userModel.js";
+
 export const getStats = async (req, res, next) => {
   try {
     // const totalSongs = await Song.countDocuments();
