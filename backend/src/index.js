@@ -2,9 +2,6 @@
 
 import express from 'express';
 import dotenv from 'dotenv';
-
-dotenv.config();
-
 import { clerkMiddleware } from '@clerk/express';
 import fileUpload from 'express-fileupload';
 import path from 'path';
@@ -19,6 +16,7 @@ import songRoutes from './routes/songRoute.js';
 import albumRoutes from './routes/albumRoute.js';
 import statRoutes from './routes/statRoute.js';
 
+dotenv.config();
 
 const __dirname = path.resolve();
 const app = express();

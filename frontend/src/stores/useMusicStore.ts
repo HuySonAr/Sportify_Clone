@@ -22,7 +22,7 @@ interface MusicStore {
   fetchStats: () => Promise<void>;
   fetchSongs: () => Promise<void>;
   deleteSong: (id: string) => Promise<void>;
-  deletedAlbum: (id: string) => Promise<void>;
+  deleteAlbum: (id: string) => Promise<void>;
 }
 
 export const useMusicStore = create<MusicStore>((set) => ({
@@ -57,7 +57,7 @@ export const useMusicStore = create<MusicStore>((set) => ({
     }
   },
 
-  deletedAlbum: async (id) => {
+  deleteAlbum: async (id) => {
     set({ isLoading: true, error: null });
     try {
       await axiosInstance.delete(`/admin/albums/${id}`);

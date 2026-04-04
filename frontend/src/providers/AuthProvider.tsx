@@ -4,14 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
 
-const updateApiToken = (token: string | null) => {
-  if (token) {
-    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-  } else {
-    delete axiosInstance.defaults.headers.common['Authorization'];
-  }
-};
-
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { getToken } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -21,19 +13,36 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const initAuth = async () => {
       try {
         const token = await getToken();
-        console.log("token: " + token);
-        updateApiToken(token);
+        console.log('token: ' + token);
         if (token) {
           await checkAdminStatus();
         }
       } catch (error: any) {
-        updateApiToken(null);
         console.log('Error in auth provider', error);
       } finally {
         setLoading(false);
       }
     };
     initAuth();
+  }, [getToken, checkAdminStatus]);
+
+  useEffect(() => {
+    const requestInterceptor = axiosInstance.interceptors.request.use(
+      async (config) => {
+        const token = await getToken();
+        if (token) {
+          config.headers['Authorization'] = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => {
+        return Promise.reject(error);
+      },
+    );
+
+    return () => {
+      axiosInstance.interceptors.request.eject(requestInterceptor);
+    };
   }, [getToken]);
 
   if (loading)
